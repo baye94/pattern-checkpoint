@@ -1,32 +1,32 @@
 /**
- * PARTIE 2 : Panier d'Achat avec le Module Pattern
- * * Le Module Pattern utilise une IIFE (Immediately Invoked Function Expression)
- * pour créer une fermeture (closure). La variable 'cart' est désormais privée
- * et protégée de l'extérieur.
- * Seules les fonctions exposées (retournées par l'IIFE) sont accessibles.
+ * PART 2: Shopping Cart with the Module Pattern
+ * * The Module Pattern uses an IIFE (Immediately Invoked Function Expression)
+ * to create a closure. The 'cart' variable is now private
+ * and protected from the outside world.
+ * Only the exposed functions (returned by the IIFE) are accessible.
  * *
  */
 
 const ShoppingCartModule = (function() {
     // -----------------------------------------------------------
-    // VARIABLE PRIVÉE : Stocke l'état du panier d'achat (non accessible globalement)
+    // PRIVATE VARIABLE: Stores the shopping cart state (not globally accessible)
     // -----------------------------------------------------------
     let cart = [];
 
     // -----------------------------------------------------------
-    // FONCTION PRIVÉE : Utilité interne
+    // PRIVATE FUNCTION: Internal utility
     // -----------------------------------------------------------
     function calculateTotal() {
         return cart.reduce((total, item) => total + (item.quantity * item.price), 0);
     }
 
     // -----------------------------------------------------------
-    // FONCTIONS PUBLIQUES : Les méthodes exposées
+    // PUBLIC FUNCTIONS: The exposed methods
     // -----------------------------------------------------------
 
     function addItem(name, quantity, price) {
         if (quantity <= 0 || price <= 0) {
-            console.error("Erreur: La quantité et le prix doivent être positifs.");
+            console.error("Error: Quantity and price must be positive.");
             return;
         }
 
@@ -34,32 +34,32 @@ const ShoppingCartModule = (function() {
 
         if (itemIndex > -1) {
             cart[itemIndex].quantity += quantity;
-            console.log(`Article mis à jour: ${name} (x${cart[itemIndex].quantity})`);
+            console.log(`Item updated: ${name} (x${cart[itemIndex].quantity})`);
         } else {
             cart.push({ name, quantity, price });
-            console.log(`Article ajouté: ${name} (x${quantity})`);
+            console.log(`Item added: ${name} (x${quantity})`);
         }
     }
 
     function removeItem(name) {
         const initialLength = cart.length;
-        // La modification se fait sur la variable privée 'cart'
+        // Modification is done on the private 'cart' variable
         cart = cart.filter(item => item.name !== name);
 
         if (cart.length < initialLength) {
-            console.log(`Article retiré: ${name}`);
+            console.log(`Item removed: ${name}`);
         } else {
-            console.warn(`Article non trouvé: ${name}`);
+            console.warn(`Item not found: ${name}`);
         }
     }
 
     function viewCart() {
-        const totalPrice = calculateTotal(); // Utilisation de la fonction privée
-        console.log("\n--- Contenu du Panier (MODULE) ---");
+        const totalPrice = calculateTotal(); // Using the private function
+        console.log("\n--- Cart Contents (MODULE) ---");
 
         if (cart.length === 0) {
-            console.log("Le panier est vide.");
-            console.log("---------------------------------\n");
+            console.log("The cart is empty.");
+            console.log("----------------------------\n");
             return;
         }
 
@@ -69,40 +69,40 @@ const ShoppingCartModule = (function() {
         });
 
         console.log(`\nTotal: ${totalPrice.toFixed(2)} TND`);
-        console.log("---------------------------------\n");
+        console.log("----------------------------\n");
     }
 
     function clearCart() {
         cart = [];
-        console.log("Le panier a été vidé.");
+        console.log("The cart has been cleared.");
     }
 
-    // Exposer uniquement l'interface publique
+    // Expose only the public interface
     return {
         addItem: addItem,
         removeItem: removeItem,
         viewCart: viewCart,
         clearCart: clearCart
-        // Note: La variable 'cart' et la fonction 'calculateTotal' ne sont pas exposées
+        // Note: The 'cart' variable and 'calculateTotal' function are not exposed
     };
 
-})(); // L'IIFE est exécutée immédiatement, créant l'instance du module.
+})(); // The IIFE is immediately executed, creating the module instance.
 
 
-// --- Exemple de Comportement (Utilisation de l'objet exposé) ---
-console.log("--- TEST DU CODE MODULE PATTERN ---");
-ShoppingCartModule.addItem("Pomme", 2, 1.5);
+// --- Example Behavior (Using the exposed object) ---
+console.log("--- TESTING MODULE PATTERN CODE ---");
+ShoppingCartModule.addItem("Apple", 2, 1.5);
 ShoppingCartModule.addItem("Orange", 3, 2.0);
-ShoppingCartModule.addItem("Pomme", 1, 1.5);
+ShoppingCartModule.addItem("Apple", 1, 1.5);
 ShoppingCartModule.viewCart();
 
-ShoppingCartModule.removeItem("Pomme");
+ShoppingCartModule.removeItem("Apple");
 ShoppingCartModule.viewCart();
 
 ShoppingCartModule.clearCart();
 ShoppingCartModule.viewCart();
 
-// Tenter d'accéder directement à la variable privée (Échec garanti):
-console.log("\n--- Tentative d'accès direct au panier ---");
-console.log("Accès à shoppingCart:", typeof shoppingCart === 'undefined' ? "variable globale non définie" : shoppingCart);
-console.log("Accès à ShoppingCartModule.cart:", ShoppingCartModule.cart === undefined ? "variable privée protégée" : "ACCÈS ILLÉGAL !");
+// Attempt to directly access the private variable (Guaranteed failure):
+console.log("\n--- Attempting direct access to cart ---");
+console.log("Accessing shoppingCart:", typeof shoppingCart === 'undefined' ? "global variable is undefined" : shoppingCart);
+console.log("Accessing ShoppingCartModule.cart:", ShoppingCartModule.cart === undefined ? "private variable is protected" : "ILLEGAL ACCESS!");
